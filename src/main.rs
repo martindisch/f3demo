@@ -9,7 +9,7 @@ use f3::{
     hal::{prelude::*, stm32f30x},
     led::Leds,
 };
-use libm::F32Ext;
+use f3demo::Primes;
 
 #[entry]
 fn main() -> ! {
@@ -36,39 +36,4 @@ fn main() -> ! {
             leds[next].on();
         }
     }
-}
-
-struct Primes {
-    curr: u32,
-}
-
-impl Primes {
-    fn new(start: u32) -> Self {
-        Self { curr: start - 1 }
-    }
-}
-
-impl Iterator for Primes {
-    type Item = u32;
-
-    fn next(&mut self) -> Option<u32> {
-        loop {
-            self.curr += 1;
-            if let Some(n) = check_prime(self.curr) {
-                break Some(n);
-            }
-        }
-    }
-}
-
-fn check_prime(n: u32) -> Option<u32> {
-    let sqrt = (n as f32).sqrt() as u32 + 1;
-
-    for i in 2..sqrt {
-        if n % i == 0 {
-            return None;
-        }
-    }
-
-    Some(n)
 }

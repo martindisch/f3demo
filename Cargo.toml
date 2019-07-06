@@ -16,7 +16,10 @@ libm = "0.1.4"
 features = ["rt"]
 version = "0.6.1"
 
-# this lets you use `cargo fix`!
+[lib]
+test = false
+bench = false
+
 [[bin]]
 name = "f3demo"
 test = false
