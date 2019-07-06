@@ -6,7 +6,7 @@ extern crate panic_itm;
 use cortex_m::iprintln;
 use cortex_m_rt::entry;
 use f3::{
-    hal::{delay::Delay, prelude::*, stm32f30x},
+    hal::{prelude::*, stm32f30x},
     led::Leds,
 };
 
@@ -17,31 +17,22 @@ fn main() -> ! {
 
     let stim = &mut cp.ITM.stim[0];
 
-    let mut flash = dp.FLASH.constrain();
     let mut rcc = dp.RCC.constrain();
     let gpioe = dp.GPIOE.split(&mut rcc.ahb);
 
-    // clock configuration using the default settings (all clocks run at 8 MHz)
-    let clocks = rcc.cfgr.freeze(&mut flash.acr);
-
     let mut leds = Leds::new(gpioe);
-    let mut delay = Delay::new(cp.SYST, clocks);
-
-    let primes = Primes::new(2);
-    for (i, n) in primes.enumerate() {
-        iprintln!(stim, "{:>6}: {}", i, n);
-        // TODO: Advance LED here
-    }
-
-    // Unreachable
     let n = leds.len();
+
+    let mut primes = Primes::new(2).enumerate();
+
     loop {
         for curr in 0..n {
+            let (i, nth_prime) = primes.next().unwrap();
+            iprintln!(stim, "{:>6}: {}", i, nth_prime);
+
             let next = (curr + 1) % n;
             leds[curr].off();
             leds[next].on();
-
-            delay.delay_ms(100_u8);
         }
     }
 }
