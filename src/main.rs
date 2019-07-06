@@ -7,14 +7,17 @@ extern crate panic_halt; // you can put a breakpoint on `rust_begin_unwind` to c
 // extern crate panic_itm; // logs messages over ITM; requires ITM support
 // extern crate panic_semihosting; // logs messages to the host stderr; requires a debugger
 
-use cortex_m::asm;
 use cortex_m_rt::entry;
+use cortex_m_semihosting::hprintln;
+use cortex_m::{iprintln, Peripherals};
 
 #[entry]
 fn main() -> ! {
-    asm::nop(); // To not have main optimize to abort in release mode, remove when you add code
+    let mut p = Peripherals::take().unwrap();
+    let stim = &mut p.ITM.stim[0];
 
-    loop {
-        // your code goes here
-    }
+    hprintln!("Hello, world!").unwrap();
+    iprintln!(stim, "Hello, world!");
+
+    loop {}
 }
