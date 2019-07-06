@@ -9,6 +9,7 @@ use f3::{
     hal::{prelude::*, stm32f30x},
     led::Leds,
 };
+use libm::F32Ext;
 
 #[entry]
 fn main() -> ! {
@@ -61,9 +62,9 @@ impl Iterator for Primes {
 }
 
 fn check_prime(n: u32) -> Option<u32> {
-    let middle = (n as f32 / 2f32) as u32 + 1;
+    let sqrt = (n as f32).sqrt() as u32 + 1;
 
-    for i in 2..middle {
+    for i in 2..sqrt {
         if n % i == 0 {
             return None;
         }
