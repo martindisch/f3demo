@@ -29,7 +29,10 @@ fn main() -> ! {
     loop {
         for curr in 0..n {
             let (i, nth_prime) = primes.next().unwrap();
-            iprintln!(stim, "{:>6}: {}", i, nth_prime);
+
+            if stim.is_fifo_ready() {
+                iprintln!(stim, "{:>6}: {}", i, nth_prime);
+            }
 
             let next = (curr + 1) % n;
             leds[curr].off();
